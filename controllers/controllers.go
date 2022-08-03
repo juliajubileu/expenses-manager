@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/juliajubileu/expenses-manager/database"
 	"github.com/juliajubileu/expenses-manager/models"
 )
 
@@ -15,32 +15,30 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllIncomes(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.Incomes)
+	var i []models.Income
+	database.DB.Find(&i)
+	json.NewEncoder(w).Encode(i)
 }
 
 func GetIncome(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-
-	for _, income := range models.Incomes {
-		if strconv.Itoa(income.Id) == id {
-			json.NewEncoder(w).Encode(income)
-		}
-	}
+	var i models.Income
+	database.DB.First(&i, id)
+	json.NewEncoder(w).Encode(i)
 }
 
 func GetAllExpenses(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.Expenses)
+	var e []models.Expense
+	database.DB.Find(&e)
+	json.NewEncoder(w).Encode(e)
 }
 
 func GetExpense(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-
-	for _, expense := range models.Expenses {
-		if strconv.Itoa(expense.Id) == id {
-			json.NewEncoder(w).Encode(expense)
-		}
-	}
+	var e models.Expense
+	database.DB.First(&e, id)
+	json.NewEncoder(w).Encode(e)
 }
 
